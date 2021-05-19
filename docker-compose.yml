@@ -1,0 +1,17 @@
+version: '3'
+services:
+  telegrambot:
+    build: telegrambot
+    restart: unless-stopped
+    depends_on:
+      - "mongodb"
+    networks:
+      - defaultnet
+  mongodb:
+    image: mongo:4.0.4
+    restart: unless-stopped
+    networks:
+      - defaultnet
+networks:
+  defaultnet:
+    driver: bridge
