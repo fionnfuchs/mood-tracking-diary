@@ -1,2 +1,3 @@
 telegrambot/__pycache__/
 telegrambot/env/
+telegrambot/config.py
