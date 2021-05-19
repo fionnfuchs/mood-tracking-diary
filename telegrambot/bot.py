@@ -1,7 +1,7 @@
 import logging
 import datetime
 
-from telegram import Update, ForceReply
+from telegram import Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -9,6 +9,7 @@ from telegram.ext import (
     Filters,
     CallbackContext,
     ConversationHandler,
+    CallbackQueryHandler,
 )
 
 from config import BOT_TOKEN
@@ -25,7 +26,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-mongodb_data_service = DataService()
+mongodb_data_service = DataService(logger)
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
@@ -68,16 +69,33 @@ def diary_entry(update: Update, _: CallbackContext) -> int:
 
 def mood(update: Update, _: CallbackContext) -> int:
     mongodb_data_service.insert_mood_description(update.effective_user.id, update.message.text, datetime.datetime.now(datetime.timezone.utc))
-    update.message.reply_text("Got it! Now just rate your mood from 1-10 for me :)")
+
+    keyboard = [
+        [
+            InlineKeyboardButton("1", callback_data="1"),
+            InlineKeyboardButton("2", callback_data="2"),
+            InlineKeyboardButton("3", callback_data="3"),
+            InlineKeyboardButton("4", callback_data="4"),
+            InlineKeyboardButton("5", callback_data="5"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text("Got it! Now just rate your mood from 1 (bad) to 5 (good) for me :)", reply_markup=reply_markup)
 
     return MOODVALUE
 
 
 def mood_value(update: Update, _: CallbackContext) -> int:
-    mongodb_data_service.insert_mood_value(update.effective_user.id, update.message.text, datetime.datetime.now(datetime.timezone.utc))
-    update.message.reply_text(
+    query = update.callback_query
+    query.answer()
+
+    query.edit_message_text(
         "Great! Message me again tommorrow with /hey so we can talk about today!"
     )
+
+    logger.info(query.data);
+    
+    mongodb_data_service.insert_mood_value(update.effective_user.id, query.data, datetime.datetime.now(datetime.timezone.utc))
 
     return ConversationHandler.END
 
@@ -114,7 +132,7 @@ def main() -> None:
         states={
             DIARYENTRY: [MessageHandler(Filters.text & ~Filters.command, diary_entry)],
             MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
-            MOODVALUE: [MessageHandler(Filters.text & ~Filters.command, mood_value)],
+            MOODVALUE: [CallbackQueryHandler(mood_value, pattern='^[1-5]$')],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )

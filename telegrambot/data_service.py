@@ -2,9 +2,10 @@ import pymongo
 
 class DataService():
 
-    def __init__(self):
+    def __init__(self, logger):
         self.client = None
         self.database = None
+        self.logger = logger
 
     def connect(self):
         self.client = pymongo.MongoClient("mongodb://mongodb:27017/")
@@ -14,16 +15,16 @@ class DataService():
         diary_col = self.database["diary_entries"]
         new_diary_entry = { "userid": user, "entry": entry, "timestamp": timestamp}
         result = diary_col.insert(new_diary_entry)
-        print(result)
+        self.logger.info(result)
     
     def insert_mood_description(self, user, description, timestamp):
         mooddesc_col = self.database["mood_description"]
         new_mooddesc = { "userid": user, "description": description, "timestamp": timestamp}
         result = mooddesc_col.insert(new_mooddesc)
-        print(result)
+        self.logger.info(result)
     
     def insert_mood_value(self, user, value, timestamp):
         moodvalue_col = self.database["mood_value"]
         new_moodvalue = { "userid": user, "value": value, "timestamp": timestamp}
         result = moodvalue_col.insert(new_moodvalue)
-        print(result)
+        self.logger.info(result)
