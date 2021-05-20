@@ -28,3 +28,10 @@ class DataService():
         new_moodvalue = { "userid": user, "value": value, "timestamp": timestamp}
         result = moodvalue_col.insert(new_moodvalue)
         self.logger.info(result)
+
+    def get_mood_values(self, user):
+        moodvalue_col = self.database["mood_value"]
+        query = { "userid": user }
+        result_docs = moodvalue_col.find(query)
+        for x in result_docs:
+            self.logger.info(x)

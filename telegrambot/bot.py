@@ -80,7 +80,7 @@ def mood(update: Update, _: CallbackContext) -> int:
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("Got it! Now just rate your mood from 1 (bad) to 5 (good) for me :)", reply_markup=reply_markup)
+    update.message.reply_text("Got it! Now just rate your mood from 1 (very bad) to 5 (very good) for me :)", reply_markup=reply_markup)
 
     return MOODVALUE
 
@@ -99,6 +99,11 @@ def mood_value(update: Update, _: CallbackContext) -> int:
 
     return ConversationHandler.END
 
+def stats(update: Update, _: CallbackContext) -> None:
+    mongodb_data_service.get_mood_values(update.effective_user.id)
+    update.message.reply_text(
+        "We are currently implementing stats..."
+    )
 
 def cancel(update: Update, _: CallbackContext) -> int:
     update.message.reply_text(
@@ -123,6 +128,7 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("reset", reset))
+    dispatcher.add_handler(CommandHandler("stats", stats))
     dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
