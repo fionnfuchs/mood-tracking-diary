@@ -17,7 +17,7 @@ from config import BOT_TOKEN
 from data_service import DataService
 
 
-DIARYENTRY, MOOD, MOODVALUE = range(3)
+DIARYENTRY, MOOD, MOODVALUE, SEESTATS = range(4)
 
 # Enable logging
 logging.basicConfig(
@@ -89,13 +89,34 @@ def mood_value(update: Update, _: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
+    keyboard = [
+        [
+            InlineKeyboardButton("Yes", callback_data="1"),
+            InlineKeyboardButton("No", callback_data="2"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
     query.edit_message_text(
-        "Great! Message me again tommorrow with /hey so we can talk about today!"
+        "Great! Do you want me to show your stats?",
+        reply_markup=reply_markup
     )
 
     logger.info(query.data);
     
     mongodb_data_service.insert_mood_value(update.effective_user.id, query.data, datetime.datetime.now(datetime.timezone.utc))
+
+    return SEESTATS
+
+def see_stats(update: Update, _: CallbackContext) -> int:
+    query = update.callback_query
+    query.answer()
+
+    query.edit_message_text(
+        "Okay, I wrote down your mood rating :) Stats will be implemented later..."
+    )
+
+    logger.info(query.data);
 
     return ConversationHandler.END
 
@@ -139,6 +160,7 @@ def main() -> None:
             DIARYENTRY: [MessageHandler(Filters.text & ~Filters.command, diary_entry)],
             MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
             MOODVALUE: [CallbackQueryHandler(mood_value, pattern='^[1-5]$')],
+            SEESTATS: [CallbackQueryHandler(see_stats, pattern='^[1-2]$')],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )
