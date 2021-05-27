@@ -1,0 +1,43 @@
+{
+  "name": "react-tailwind-boilerplate",
+  "version": "1.0.0",
+  "author": "Fionn Fuchs",
+  "private": true,
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-localization": "^1.0.16",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^4.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "build:styles": "postcss src/styles/tailwind.css -o src/styles/styles.css",
+    "prebuild": "npm run build:styles",
+    "prestart": "npm run build:styles"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.0.5",
+    "postcss": "^8.2.12",
+    "postcss-cli": "^8.3.1",
+    "tailwindcss": "^2.1.2"
+  }
+}
