@@ -12,7 +12,6 @@ function App() {
             <MoodPlot></MoodPlot>
           </div>
         </div>
-
       </div>
     </Router>
   )
