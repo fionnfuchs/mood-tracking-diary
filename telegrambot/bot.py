@@ -1,5 +1,6 @@
 import logging
 import datetime
+from os import access
 
 from telegram import Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -59,7 +60,11 @@ def reset(update: Update, _: CallbackContext) -> None:
 
 
 def diary_entry(update: Update, _: CallbackContext) -> int:
-    mongodb_data_service.insert_diary_entry(update.effective_user.id, update.message.text, datetime.datetime.now(datetime.timezone.utc))
+    mongodb_data_service.insert_diary_entry(
+        update.effective_user.id,
+        update.message.text,
+        datetime.datetime.now(datetime.timezone.utc),
+    )
     update.message.reply_text(
         "I got you! How would you describe your mood yesterday? Just a few words are enough :)"
     )
@@ -68,7 +73,11 @@ def diary_entry(update: Update, _: CallbackContext) -> int:
 
 
 def mood(update: Update, _: CallbackContext) -> int:
-    mongodb_data_service.insert_mood_description(update.effective_user.id, update.message.text, datetime.datetime.now(datetime.timezone.utc))
+    mongodb_data_service.insert_mood_description(
+        update.effective_user.id,
+        update.message.text,
+        datetime.datetime.now(datetime.timezone.utc),
+    )
 
     keyboard = [
         [
@@ -80,7 +89,10 @@ def mood(update: Update, _: CallbackContext) -> int:
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("Got it! Now just rate your mood from 1 (very bad) to 5 (very good) for me :)", reply_markup=reply_markup)
+    update.message.reply_text(
+        "Got it! Now just rate your mood from 1 (very bad) to 5 (very good) for me :)",
+        reply_markup=reply_markup,
+    )
 
     return MOODVALUE
 
@@ -98,33 +110,43 @@ def mood_value(update: Update, _: CallbackContext) -> int:
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     query.edit_message_text(
-        "Great! Do you want me to show your stats?",
-        reply_markup=reply_markup
+        "Great! Do you want me to show your stats?", reply_markup=reply_markup
     )
 
-    logger.info(query.data);
-    
-    mongodb_data_service.insert_mood_value(update.effective_user.id, query.data, datetime.datetime.now(datetime.timezone.utc))
+    logger.info(query.data)
+
+    mongodb_data_service.insert_mood_value(
+        update.effective_user.id,
+        query.data,
+        datetime.datetime.now(datetime.timezone.utc),
+    )
 
     return SEESTATS
+
 
 def see_stats(update: Update, _: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    query.edit_message_text(
-        "Okay, I wrote down your mood rating :) Stats will be implemented later..."
+    access_token = mongodb_data_service.insert_new_access_token(
+        update.effective_user.id
     )
 
-    logger.info(query.data);
+    query.edit_message_text(
+        "Okay, I wrote down your mood rating :) You can see your stats at https://notimplemented.com/stats?token="
+        + access_token
+        + " . This link will be working for the next 48 hours."
+    )
+
+    logger.info(query.data)
 
     return ConversationHandler.END
 
+
 def stats(update: Update, _: CallbackContext) -> None:
     mongodb_data_service.get_mood_values(update.effective_user.id)
-    update.message.reply_text(
-        "We are currently implementing stats..."
-    )
+    update.message.reply_text("We are currently implementing stats...")
+
 
 def cancel(update: Update, _: CallbackContext) -> int:
     update.message.reply_text(
@@ -159,8 +181,8 @@ def main() -> None:
         states={
             DIARYENTRY: [MessageHandler(Filters.text & ~Filters.command, diary_entry)],
             MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
-            MOODVALUE: [CallbackQueryHandler(mood_value, pattern='^[1-5]$')],
-            SEESTATS: [CallbackQueryHandler(see_stats, pattern='^[1-2]$')],
+            MOODVALUE: [CallbackQueryHandler(mood_value, pattern="^[1-5]$")],
+            SEESTATS: [CallbackQueryHandler(see_stats, pattern="^[1-2]$")],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )
