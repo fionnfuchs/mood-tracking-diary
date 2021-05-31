@@ -8,9 +8,8 @@ function viewRoute(databaseService) {
     const user = req.query.user;
     const token = req.query.token;
 
-    console.log("Trying to get view data for user " + user + " with token " + token);
-    const viewData = await databaseService.getWebViewData(user, token);
-    console.log(viewData);
+    console.log("Getting view data for user " + user + " with token " + token);
+    const viewData = await databaseService.getWebViewData(token, user);
 
     res.send(viewData);
 

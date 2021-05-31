@@ -19,11 +19,14 @@ class DatabaseService {
 
     async accessTokenValid(token, userid) {
         const accessTokenCollection = this.userDatabase.collection("access_tokens");
+
         const cursor = accessTokenCollection.find({ userid: parseInt(userid), token: token })
         const token_available = await cursor.count()
         if (token_available > 0) {
+            console.log("Valid token...");
             return true;
         } else {
+            console.log("Invalid token...");
             return false;
         }
     }
@@ -43,7 +46,7 @@ class DatabaseService {
     }
 
     async getMoodValues(userid) {
-        const moodValueCollection = this.userDatabase.collection("mood_values");
+        const moodValueCollection = this.userDatabase.collection("mood_value");
         const cursor = moodValueCollection.find({ userid: parseInt(userid) });
 
         if ((await cursor.count()) === 0) {
