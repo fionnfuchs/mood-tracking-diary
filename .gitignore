@@ -1,3 +1,5 @@
 telegrambot/__pycache__/
 telegrambot/env/
 telegrambot/config.py
+.auto-type/
+backend/public/

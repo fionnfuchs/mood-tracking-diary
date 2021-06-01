@@ -12,7 +12,6 @@ class DatabaseService {
         if (await this.accessTokenValid(token, userid)) {
             const diaryEntries = await this.getDiaryEntries(userid);
             const moodValues = await this.getMoodValues(userid);
-
             return { "diaryEntries": diaryEntries, "moodValues": moodValues };
         }
     }

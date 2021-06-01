@@ -2,13 +2,46 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 
 class MoodPlot extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+
+    }
+
+    componentDidMount() {
+        if (this.props.data && this.props.data.moodValues) {
+            this.dataUpdate();
+        }
+    }
+
+    componentDidUpdate(previousProps, previousState) {
+        console.log(this.props.data);
+        if (previousProps.data != this.props.data && this.props.data != null) {
+            this.dataUpdate();
+        }
+    }
+
+    dataUpdate() {
+        console.log("Data is available.");
+
+        var moodValues = [];
+        var dates = [];
+        for (var value of this.props.data.moodValues) {
+            moodValues.push(value.value);
+            dates.push(value.timestamp);
+        }
+
+        this.setState({ values: moodValues, dates: dates });
+    }
+
     render() {
         return (
             <Plot
                 data={[
                     {
-                        x: ["22.05.2021", "23.05.2021", "24.05.2021", "25.05.2021", "26.05.2021", "27.05.2021", "28.05.2021"],
-                        y: [2, 3, 3, 5, 4, 2, 1],
+                        x: this.state.dates,
+                        y: this.state.values,
                         type: 'scatter',
                         mode: 'lines+markers',
                         marker: { color: 'purple' },
