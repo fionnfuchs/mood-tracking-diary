@@ -37,21 +37,25 @@ class MoodPlot extends React.Component {
 
     render() {
         return (
-            <Plot
-                data={[
-                    {
-                        x: this.state.dates,
-                        y: this.state.values,
-                        type: 'scatter',
-                        mode: 'lines+markers',
-                        marker: { color: 'purple' },
-                    },
-                ]}
-                config={
-                    { staticPlot: true }
-                }
-                layout={{ width: 600, height: 400, title: 'Your mood last week', plot_bgcolor: "rgba(0,0,0,0)", paper_bgcolor: 'rgba(0,0,0,0)' }}
-            />
+            <div class="w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+                <div class="flex items-center justify-center">
+                    <Plot
+                        data={[
+                            {
+                                x: this.state.dates,
+                                y: this.state.values,
+                                type: 'scatter',
+                                mode: 'lines+markers',
+                                marker: { color: 'purple' },
+                            },
+                        ]}
+                        config={
+                            { staticPlot: true }
+                        }
+                        layout={{ width: 600, height: 400, title: 'Your mood overview', plot_bgcolor: "rgba(0,0,0,0)", paper_bgcolor: 'rgba(0,0,0,0)' }}
+                    />
+                </div>
+            </div>
         );
     }
 }

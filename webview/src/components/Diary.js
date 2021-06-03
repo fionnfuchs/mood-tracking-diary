@@ -40,13 +40,14 @@ class Diary extends React.Component {
 
 
             for (let i = 0; i < this.state.entries.length; i++) {
-                entryObjects.push(<p>{this.state.dates[i]}</p>);
-                entryObjects.push(<p>{this.state.entries[i]}</p>);
+                entryObjects.push(<h2 class="text-gray-800 text-3xl font-semibold">{this.state.dates[i]}</h2>);
+                entryObjects.push(<p class="mt-2 text-gray-600">{this.state.entries[i]}</p>);
+                entryObjects.push(<p class="mt-2 text-gray-600"></p>);
             }
         }
 
         return (
-            <div className="bg-grey-800 text-black rounded-lg border shadow-lg p-5">
+            <div class="w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-20">
                 {entryObjects}
             </div>
         );

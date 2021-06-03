@@ -11,7 +11,7 @@ class App extends React.Component {
   backendService = new BackendService();
   mockDataService = new MockDataService();
 
-  mock = false;
+  mock = true;
 
   constructor(props) {
     super(props);
@@ -38,10 +38,7 @@ class App extends React.Component {
       <Router>
         <div className="flex flex-col min-h-screen">
           <div className="flex items-center justify-center">
-            <div className="bg-grey-800 text-white font-bold rounded-lg border shadow-lg p-5">
-              <MoodPlot data={this.state.data}></MoodPlot>
-            </div>
-
+            <MoodPlot data={this.state.data}></MoodPlot>
           </div>
           <div className="flex items-center justify-center">
             <Diary data={this.state.data}></Diary>
