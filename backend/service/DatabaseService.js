@@ -32,7 +32,7 @@ class DatabaseService {
 
     async getDiaryEntries(userid) {
         const diaryEntryCollection = this.userDatabase.collection("diary_entries");
-        const cursor = diaryEntryCollection.find({ userid: parseInt(userid) });
+        const cursor = diaryEntryCollection.find({ userid: parseInt(userid) }).sort({ timestamp: -1 });
 
         if ((await cursor.count()) === 0) {
             console.log("No documents found!");
@@ -46,7 +46,7 @@ class DatabaseService {
 
     async getMoodValues(userid) {
         const moodValueCollection = this.userDatabase.collection("mood_value");
-        const cursor = moodValueCollection.find({ userid: parseInt(userid) });
+        const cursor = moodValueCollection.find({ userid: parseInt(userid) }).sort({ timestamp: -1 });
 
         if ((await cursor.count()) === 0) {
             console.log("No documents found!");

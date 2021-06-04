@@ -13,15 +13,12 @@ class Diary extends React.Component {
     }
 
     componentDidUpdate(previousProps, previousState) {
-        console.log(this.props.data);
         if (previousProps.data != this.props.data && this.props.data != null) {
             this.dataUpdate();
         }
     }
 
     dataUpdate() {
-        console.log("Data is available.");
-
         var entries = [];
         var dates = [];
         for (var value of this.props.data.diaryEntries) {
@@ -47,7 +44,7 @@ class Diary extends React.Component {
         }
 
         return (
-            <div class="w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+            <div class="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-5">
                 {entryObjects}
             </div>
         );
