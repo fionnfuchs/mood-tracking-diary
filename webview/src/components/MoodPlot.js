@@ -35,6 +35,7 @@ class MoodPlot extends React.Component {
     render() {
         return (
             <div class="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-5">
+                <h2 class="text-gray-800 text-2xl font-semibold">Your Mood Stats</h2>
                 <div class="flex items-center justify-center">
                     <Plot
                         data={[
@@ -49,7 +50,7 @@ class MoodPlot extends React.Component {
                         config={
                             { staticPlot: true }
                         }
-                        layout={{ width: 600, height: 400, title: 'Your mood overview', plot_bgcolor: "rgba(0,0,0,0)", paper_bgcolor: 'rgba(0,0,0,0)' }}
+                        layout={{ width: 600, height: 400, plot_bgcolor: "rgba(0,0,0,0)", paper_bgcolor: 'rgba(0,0,0,0)' }}
                     />
                 </div>
             </div>

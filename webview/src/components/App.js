@@ -11,7 +11,7 @@ class App extends React.Component {
   backendService = new BackendService();
   mockDataService = new MockDataService();
 
-  mock = false;
+  mock = true;
 
   constructor(props) {
     super(props);
@@ -37,7 +37,7 @@ class App extends React.Component {
     var webview = <div className="flex flex-col min-h-screen">
       <div className="flex items-center justify-center">
         <div class="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-10">
-          <h1 class="text-gray-800 text-5xl font-semibold">Loading...</h1>
+          <h1 class="text-gray-800 text-4xl font-semibold">Loading...</h1>
           <p>Loading your data - please wait a moment...</p>
         </div>
       </div>
@@ -47,9 +47,9 @@ class App extends React.Component {
 
       webview = <div className="flex flex-col min-h-screen">
         <div className="flex items-center justify-center">
-          <div class="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-10">
-            <h1 class="text-gray-800 text-5xl font-semibold">Your Modia Diary and Stats</h1>
-            <p>You should not share this link with anybody!</p>
+          <div className="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-10">
+            <h1 className="text-gray-800 text-4xl font-semibold">Your Mood Diary and Stats</h1>
+            <p className="text-red-700">You should not share this link with anybody!</p>
           </div>
         </div>
         <div className="flex items-center justify-center">
@@ -64,8 +64,8 @@ class App extends React.Component {
 
       webview = <div className="flex flex-col min-h-screen">
         <div className="flex items-center justify-center">
-          <div class="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-10">
-            <h1 class="text-gray-800 text-5xl font-semibold">Invalid Link</h1>
+          <div className="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-10">
+            <h1 className="text-gray-800 text-4xl font-semibold">Invalid Link</h1>
             <p>Generate a new one by sending /stats to the Modia bot!</p>
           </div>
         </div>
