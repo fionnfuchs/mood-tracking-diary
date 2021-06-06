@@ -109,11 +109,10 @@ def mood_value(update: Update, _: CallbackContext) -> int:
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    query.edit_message_text(
-        "Great! Do you want me to show your stats?", reply_markup=reply_markup
+    mood_value_count = len(
+        mongodb_data_service.get_mood_values(update.effective_user.id)
     )
-
-    logger.info(query.data)
+    logger.info(mood_value_count)
 
     mongodb_data_service.insert_mood_value(
         update.effective_user.id,
@@ -121,6 +120,13 @@ def mood_value(update: Update, _: CallbackContext) -> int:
         datetime.datetime.now(datetime.timezone.utc),
     )
 
+    if mood_value_count >= 3:
+        query.edit_message_text(
+            "Great! Do you want me to show your stats?", reply_markup=reply_markup
+        )
+    else:
+        query.edit_message_text("Great!")
+        return ConversationHandler.END
     return SEESTATS
 
 
@@ -128,15 +134,17 @@ def see_stats(update: Update, _: CallbackContext) -> int:
     query = update.callback_query
     query.answer()
 
-    access_token = mongodb_data_service.insert_new_access_token(
-        update.effective_user.id
-    )
-
-    query.edit_message_text(
-        "Okay, I wrote down your mood rating :) You can see your stats at https://notimplemented.com/stats?token="
-        + access_token
-        + " . This link will be working for the next 48 hours."
-    )
+    if query.data == "1":
+        access_token = mongodb_data_service.insert_new_access_token(
+            update.effective_user.id
+        )
+        query.edit_message_text(
+            "Okay, I wrote down your mood rating :) You can see your stats at https://notimplemented.com/stats?token="
+            + access_token
+            + " . This link will be working for the next 48 hours."
+        )
+    else:
+        query.edit_message_text("Okay, you can get a link anytime by writing /stats .")
 
     logger.info(query.data)
 

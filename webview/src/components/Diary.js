@@ -13,7 +13,7 @@ class Diary extends React.Component {
     }
 
     componentDidUpdate(previousProps, previousState) {
-        if (previousProps.data != this.props.data && this.props.data != null) {
+        if (previousProps.data !== this.props.data && this.props.data != null) {
             this.dataUpdate();
         }
     }

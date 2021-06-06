@@ -40,8 +40,11 @@ class DataService:
         moodvalue_col = self.database["mood_value"]
         query = {"userid": user}
         result_docs = moodvalue_col.find(query)
+        result = []
         for x in result_docs:
-            self.logger.info(x)
+            result.append(x)
+        self.logger.info(result)
+        return result
 
     def insert_new_access_token(self, user):
         token_col = self.database["access_tokens"]
