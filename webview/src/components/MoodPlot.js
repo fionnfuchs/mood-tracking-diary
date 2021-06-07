@@ -1,5 +1,6 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+import Card from './Card';
 
 class MoodPlot extends React.Component {
 
@@ -34,26 +35,31 @@ class MoodPlot extends React.Component {
 
     render() {
         return (
-            <div class="w-full lg:w-1/2 2xl:w-1/3 py-4 px-8 bg-white shadow-lg rounded-lg my-5">
-                <h2 class="text-gray-800 text-2xl font-semibold">Your Mood Stats</h2>
-                <div class="flex items-center justify-center">
+            <Card>
+                <h2 className="text-gray-800 text-2xl font-semibold">Your Mood Stats</h2>
+                <div className="flex items-center justify-center">
                     <Plot
-                        data={[
-                            {
-                                x: this.state.dates,
-                                y: this.state.values,
-                                type: 'scatter',
-                                mode: 'lines+markers',
-                                marker: { color: 'purple' },
-                            },
-                        ]}
-                        config={
-                            { staticPlot: true }
+                        data={[{
+                            x: this.state.dates,
+                            y: this.state.values,
+                            type: 'scatter',
+                            mode: 'lines+markers',
+                            marker: {
+                                color: 'purple'
+                            }
                         }
-                        layout={{ width: 600, height: 400, plot_bgcolor: "rgba(0,0,0,0)", paper_bgcolor: 'rgba(0,0,0,0)' }}
-                    />
+                        ]}
+                        config={{
+                            staticPlot: true
+                        }}
+                        layout={{
+                            width: 600,
+                            height: 400,
+                            plot_bgcolor: "rgba(0,0,0,0)",
+                            paper_bgcolor: 'rgba(0,0,0,0)'
+                        }} />
                 </div>
-            </div>
+            </Card>
         );
     }
 }
