@@ -12,6 +12,26 @@ class DataService:
         self.client = pymongo.MongoClient("mongodb://mongodb:27017/")
         self.database = self.client["userdata"]
 
+    def insert_user_object(self, user, chatid):
+        user_col = self.database["users"]
+        new_user_object = {
+            "userid": user,
+            "chatid": chatid,
+            "timezone": "undefined",
+            "polltime": "undefined",
+            "language": "en",
+        }
+        result = user_col.insert(new_user_object)
+        self.logger.info(result)
+
+    def user_exists(self, user):
+        user_col = self.database["users"]
+        query = {"userid": user}
+        result_docs = user_col.find(query)
+        for _ in result_docs:
+            return True
+        return False
+
     def insert_diary_entry(self, user, entry, timestamp):
         diary_col = self.database["diary_entries"]
         new_diary_entry = {"userid": user, "entry": entry, "timestamp": timestamp}

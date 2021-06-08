@@ -1,12 +1,12 @@
-import React from 'react'
-import '../styles/styles.css'
-import { BrowserRouter as Router } from 'react-router-dom'
-import MoodPlot from './MoodPlot'
-import BackendService from '../services/BackendService'
-import Diary from './Diary'
-import MockDataService from '../services/MockData'
-import cleanDateValues from '../services/DateService'
-import Card from './Card'
+import React from 'react';
+import '../styles/styles.css';
+import { BrowserRouter as Router } from 'react-router-dom';
+import MoodPlot from './MoodPlot';
+import BackendService from '../services/BackendService';
+import Diary from './Diary';
+import MockDataService from '../services/MockData';
+import cleanDateValues from '../services/DateService';
+import Card from './Card';
 
 class App extends React.Component {
 
