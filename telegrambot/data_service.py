@@ -24,6 +24,14 @@ class DataService:
         result = user_col.insert(new_user_object)
         self.logger.info(result)
 
+    def get_all_users(self):
+        user_col = self.database["users"]
+        result_docs = user_col.find()
+        result = []
+        for user in result_docs:
+            result.append(user)
+        return result
+
     def user_exists(self, user):
         user_col = self.database["users"]
         query = {"userid": user}

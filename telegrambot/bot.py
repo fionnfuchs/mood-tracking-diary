@@ -3,7 +3,15 @@ import datetime
 import pytz
 from os import access
 
-from telegram import Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton
+from locale_strings import locale_strings
+
+from telegram import (
+    Update,
+    ForceReply,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    update,
+)
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -31,6 +39,7 @@ logger = logging.getLogger(__name__)
 mongodb_data_service = DataService(logger)
 job_queue = None
 job_queue_user_list = []
+user_dict = {}
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
@@ -40,6 +49,7 @@ def start(update: Update, _) -> None:
 
     if not mongodb_data_service.user_exists(user.id):
         mongodb_data_service.insert_user_object(user.id, update.message.chat.id)
+        update_user_dict()
     else:
         logger.info("This user already exists. Not creating a new user object...")
 
@@ -50,8 +60,8 @@ def start(update: Update, _) -> None:
     else:
         logger.info("Job already created for user. Skipping...")
 
-    update.message.reply_markdown_v2(
-        fr"Hi {user.mention_markdown_v2()}\! My name is Modia\. I am a bot\. I can track your mood and write a diary with you if you like\! Just say /hey or tap it and we can begin\!",
+    update.message.reply_text(
+        locale_strings[user_dict[update.effective_user.id]["language"]]["greeting"],
         reply_markup=ForceReply(selective=True),
     )
 
@@ -64,27 +74,33 @@ def set_daily_reminder(job_queue, chatid):
 def help_command(update: Update, _: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        "Don't know how to continue? Here is a list of commands you can use:\n (To be implemented)"
+        locale_strings[user_dict[update.effective_user.id]["language"]]["help"]
     )
 
 
 def start_report_auto(context: CallbackContext) -> int:
     context.bot.send_message(
         chat_id=context.job.context,
-        text="Hey :) Want to tell me about yesterday? Just answer with (or click) /hey to start.",
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "start_report_auto"
+        ],
     )
 
 
 def start_report(update: Update, _: CallbackContext) -> int:
     update.message.reply_text(
-        "Hey :) Glad to hear from you! Tell me a bit about yesterday!"
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "start_report"
+        ]
     )
 
     return DIARYENTRY
 
 
 def reset(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text("I reset everything! You can have a fresh start :)")
+    update.message.reply_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]]["reset"]
+    )
 
 
 def diary_entry(update: Update, _: CallbackContext) -> int:
@@ -94,7 +110,9 @@ def diary_entry(update: Update, _: CallbackContext) -> int:
         datetime.datetime.now(datetime.timezone.utc),
     )
     update.message.reply_text(
-        "I got you! How would you describe your mood yesterday? Just a few words are enough :)"
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "diary_entry_reply"
+        ]
     )
 
     return MOOD
@@ -118,7 +136,9 @@ def mood(update: Update, _: CallbackContext) -> int:
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text(
-        "Got it! Now just rate your mood from 1 (very bad) to 5 (very good) for me :)",
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "mood_reply"
+        ],
         reply_markup=reply_markup,
     )
 
@@ -150,7 +170,10 @@ def mood_value(update: Update, _: CallbackContext) -> int:
 
     if mood_value_count >= 3:
         query.edit_message_text(
-            "Great! Do you want me to show your stats?", reply_markup=reply_markup
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "mood_value_reply"
+            ],
+            reply_markup=reply_markup,
         )
     else:
         query.edit_message_text("Great!")
@@ -166,13 +189,18 @@ def see_stats(update: Update, _: CallbackContext) -> int:
         access_token = mongodb_data_service.insert_new_access_token(
             update.effective_user.id
         )
+        link = "https://notimplemented.com/stats?token=" + access_token
         query.edit_message_text(
-            "Okay, I wrote down your mood rating :) You can see your stats at https://notimplemented.com/stats?token="
-            + access_token
-            + " . This link will be working for the next 48 hours."
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "stats_link"
+            ].replace("<link>", link)
         )
     else:
-        query.edit_message_text("Okay, you can get a link anytime by writing /stats .")
+        query.edit_message_text(
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "stats_nolink"
+            ]
+        )
 
     logger.info(query.data)
 
@@ -186,10 +214,17 @@ def stats(update: Update, _: CallbackContext) -> None:
 
 def cancel(update: Update, _: CallbackContext) -> int:
     update.message.reply_text(
-        "Okay we will stop here :) You can start again at any time with /hey!"
+        text=locale_strings[user_dict[update.effective_user.id]["language"]]["cancel"],
     )
 
     return ConversationHandler.END
+
+
+def update_user_dict():
+    global user_dict
+    user_list = mongodb_data_service.get_all_users()
+    for user in user_list:
+        user_dict[user["userid"]] = user
 
 
 def main() -> None:
@@ -199,6 +234,7 @@ def main() -> None:
 
     # Create database connection
     mongodb_data_service.connect()
+    update_user_dict()
 
     # Create the Updater and pass it your bot's token.
     updater = Updater(BOT_TOKEN)
