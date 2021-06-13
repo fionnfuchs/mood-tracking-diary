@@ -12,5 +12,17 @@ locale_strings = {
         "stats_nolink": "Okay, you can get a link anytime by writing /stats .",
         "cancel": "Okay we will stop here :) You can start again at any time with /hey!",
     },
-    "de": {},
+    "de": {
+        "greeting": "Hi! Mein Name ist Modia. Ich bin ein Bot. Zusammen können wir deine Stimmung tracken und ein Tagebuch schreiben! Sag einfach /hey oder drück darauf!",
+        "help": "Du weißt nicht weiter? Hier ist eine Liste an Befehlen die du geben kannst:\n (To be implemented)",
+        "start_report_auto": "Hey :) Willst du mir nicht von gestern erzählen? Schreib einfach /hey (oder drück drauf) um zu starten.",
+        "start_report": "Hey :) Schön von dir zu hören! Erzähl mir ein bisschen über deinen Tag gestern!",
+        "reset": "Ich habe alles zurückgesetzt! Du kannst ganz von vorne anfangen :)",
+        "diary_entry_reply": "Verstanden! Wie würdest du deine Stimmung gestern beschreiben? Ein paar Worte reichen aus :)",
+        "mood_reply": "Notiert! Jetzt musst du nur noch deine gestrige Stimmung noch von 1 (sehr schlecht) bis 5 (sehr gut) bewerten :)",
+        "mood_value_reply": "Großartig! Willst du einen Link zu deinem bisherigen Tagebuch und deinen Stimmungsstatistiken haben?",
+        "stats_link": "Okay, Ich habe alles notiert :) Du kannst all deine Daten hier abrufen <link> . Dieser Link sollte mindestens 48 Stunden funktionieren.",
+        "stats_nolink": "Okay, du kannst dir jederzeit einen Link holen indem du /stats schreibst.",
+        "cancel": "Okay, wir hören hier auf :) Du kannst jederzeit erneut starten mit /hey!",
+    },
 }
