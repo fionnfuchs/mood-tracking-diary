@@ -19,7 +19,7 @@ class DataService:
             "chatid": chatid,
             "timezone": "undefined",
             "polltime": "undefined",
-            "language": "en",
+            "language": "de",
         }
         result = user_col.insert(new_user_object)
         self.logger.info(result)
