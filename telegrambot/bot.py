@@ -5,6 +5,8 @@ from os import access
 
 from locale_strings import locale_strings
 
+from message_utils import validate_current_time, get_timezone_by_current_time
+
 from telegram import (
     Update,
     ForceReply,
@@ -27,7 +29,9 @@ from config import BOT_TOKEN
 
 from data_service import DataService
 
-DIARYENTRY, MOOD, MOODVALUE, SEESTATS = range(4)
+DIARYENTRY, MOOD, MOODVALUE, SEESTATS, LANGUAGE, TIMEZONE_CURRENTTIME, REMINDER = range(
+    7
+)
 
 # Enable logging
 logging.basicConfig(
@@ -60,6 +64,8 @@ def start(update: Update, _) -> None:
     else:
         logger.info("Job already created for user. Skipping...")
 
+    # New user? -> Ask to perform /setup (or start setup automatically?)
+
     update.message.reply_text(
         locale_strings[user_dict[update.effective_user.id]["language"]]["greeting"],
         reply_markup=ForceReply(selective=True),
@@ -78,13 +84,15 @@ def help_command(update: Update, _: CallbackContext) -> None:
     )
 
 
-def start_report_auto(context: CallbackContext) -> int:
-    context.bot.send_message(
-        chat_id=context.job.context,
-        text=locale_strings[user_dict[update.effective_user.id]["language"]][
-            "start_report_auto"
-        ],
+def reset(update: Update, _: CallbackContext) -> None:
+    update.message.reply_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]]["reset"]
     )
+
+
+# -----------
+#   REPORT
+# -----------
 
 
 def start_report(update: Update, _: CallbackContext) -> int:
@@ -97,9 +105,12 @@ def start_report(update: Update, _: CallbackContext) -> int:
     return DIARYENTRY
 
 
-def reset(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text(
-        text=locale_strings[user_dict[update.effective_user.id]["language"]]["reset"]
+def start_report_auto(context: CallbackContext) -> int:
+    context.bot.send_message(
+        chat_id=context.job.context,
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "start_report_auto"
+        ],
     )
 
 
@@ -220,10 +231,108 @@ def cancel(update: Update, _: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+# -----------
+#   SETUP
+# -----------
+
+
+def start_setup(update: Update, _: CallbackContext) -> int:
+
+    keyboard = [
+        [
+            InlineKeyboardButton("English", callback_data="1"),
+            InlineKeyboardButton("German", callback_data="2"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "start_setup"
+        ],
+        reply_markup=reply_markup,
+    )
+
+    return LANGUAGE
+
+
+def language(update: Update, _: CallbackContext) -> int:
+    query = update.callback_query
+    query.answer()
+
+    language = "en"
+
+    if query.data == "2":
+        language = "de"
+
+    mongodb_data_service.set_user_language(update.effective_user.id, language)
+    update_user_dict()
+
+    # Languages 1 = EN, 2 = DE, query.data
+    # User is asked for current time for timezone purposes
+
+    query.edit_message_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "language_reply"
+        ]
+    )
+
+    return TIMEZONE_CURRENTTIME
+
+
+def timezone_currenttime(update: Update, _: CallbackContext) -> int:
+
+    logger.info("Got current time: " + update.message.text)
+
+    if not validate_current_time(update.message.text):
+
+        update.message.reply_text(
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "timezone_invalid_reply"
+            ]
+        )
+
+        return TIMEZONE_CURRENTTIME
+
+    timezone = get_timezone_by_current_time(update.message.text)
+    mongodb_data_service.set_user_timezone(update.effective_user.id, timezone)
+    update_user_dict()
+
+    update.message.reply_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "timezone_reply"
+        ]
+    )
+
+    return REMINDER
+
+
+def reminder(update: Update, _: CallbackContext) -> int:
+
+    if not validate_current_time(update.message.text):
+
+        update.message.reply_text(
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "timezone_invalid_reply"
+            ]
+        )
+
+        return TIMEZONE_CURRENTTIME
+
+    update.message.reply_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "reminder_reply"
+        ]
+    )
+
+    return ConversationHandler.END
+
+
 def update_user_dict():
     global user_dict
     user_list = mongodb_data_service.get_all_users()
     for user in user_list:
+        logger.info(user)
         user_dict[user["userid"]] = user
 
 
@@ -258,6 +367,18 @@ def main() -> None:
             MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
             MOODVALUE: [CallbackQueryHandler(mood_value, pattern="^[1-5]$")],
             SEESTATS: [CallbackQueryHandler(see_stats, pattern="^[1-2]$")],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("setup", start_setup)],
+        states={
+            LANGUAGE: [CallbackQueryHandler(language, pattern="^[1-2]$")],
+            TIMEZONE_CURRENTTIME: [
+                MessageHandler(Filters.text & ~Filters.command, timezone_currenttime)
+            ],
+            REMINDER: [MessageHandler(Filters.text & ~Filters.command, reminder)],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )

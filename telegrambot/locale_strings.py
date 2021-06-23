@@ -11,6 +11,11 @@ locale_strings = {
         "stats_link": "Okay, I wrote down your mood rating :) You can see your stats at <link> . This link will be working for the next 48 hours.",
         "stats_nolink": "Okay, you can get a link anytime by writing /stats .",
         "cancel": "Okay we will stop here :) You can start again at any time with /hey!",
+        "start_setup": "",
+        "language_reply": "",
+        "timezone_reply": "",
+        "timezone_invalid_reply": "",
+        "reminder_reply": "",
     },
     "de": {
         "greeting": "Hi! Mein Name ist Modia. Ich bin ein Bot. Zusammen können wir deine Stimmung tracken und ein Tagebuch schreiben! Sag einfach /hey oder drück darauf!",
@@ -24,5 +29,10 @@ locale_strings = {
         "stats_link": "Okay, Ich habe alles notiert :) Du kannst all deine Daten hier abrufen <link> . Dieser Link sollte mindestens 48 Stunden funktionieren.",
         "stats_nolink": "Okay, du kannst dir jederzeit einen Link holen indem du /stats schreibst.",
         "cancel": "Okay, wir hören hier auf :) Du kannst jederzeit erneut starten mit /hey!",
+        "start_setup": "Wir werden jetzt einige Dinge zusammen durchgehen. Zuerst wähle bitte die gewünschte Sprache für Modia aus.",
+        "language_reply": "Notiert! Ich werde ab jetzt in dieser Sprache mit dir reden. Jetzt sag mir doch bitte wie spät es gerade bei dir ist (bspw. 09:00 U1hr). Diese Information brauche ich um die Zeitzone für dich richtig einzustellen.",
+        "timezone_reply": "Perfekt. Als letztes sag mir doch bitte um wie viel Uhr ich dich an deinen täglichen Tagebucheintrag erinnern soll (bswp. 21:00 Uhr). Wenn du nicht erinnert werden möchtest antworte bitte mit nein.",
+        "timezone_invalid_reply": "Ich konnte die Uhrzeit leider nicht verstehen. Bitte gib sie im folgenden Format an: '09:00 Uhr' oder einfach '09:00'.",
+        "reminder_reply": "Notiert! Das wars auch schon. Vielen Dank, dass du dir die Zeit genommen hast.",
     },
 }

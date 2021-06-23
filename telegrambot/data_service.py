@@ -24,6 +24,21 @@ class DataService:
         result = user_col.insert(new_user_object)
         self.logger.info(result)
 
+    def set_user_timezone(self, user, timezone):
+        user_col = self.database["users"]
+        result = user_col.update({"userid": user}, {"$set": {"timezone": timezone}})
+        self.logger.info(result)
+
+    def set_user_language(self, user, language):
+        user_col = self.database["users"]
+        result = user_col.update({"userid": user}, {"$set": {"language": language}})
+        self.logger.info(result)
+
+    def set_user_polltime(self, user, polltime):
+        user_col = self.database["users"]
+        result = user_col.update({"userid": user}, {"$set": {"polltime": polltime}})
+        self.logger.info(result)
+
     def get_all_users(self):
         user_col = self.database["users"]
         result_docs = user_col.find()
