@@ -5,7 +5,11 @@ from os import access
 
 from locale_strings import locale_strings
 
-from message_utils import validate_current_time, get_timezone_by_current_time
+from message_utils import (
+    validate_current_time,
+    get_timezone_by_current_time,
+    get_polltime_by_message_time,
+)
 
 from telegram import (
     Update,
@@ -57,14 +61,8 @@ def start(update: Update, _) -> None:
     else:
         logger.info("This user already exists. Not creating a new user object...")
 
-    if update.effective_user.id not in job_queue_user_list:
-        logger.info("Adding job to notify user.")
-        set_daily_reminder(job_queue, update.message.chat.id)
-        job_queue_user_list.append(update.effective_user.id)
-    else:
-        logger.info("Job already created for user. Skipping...")
-
     # New user? -> Ask to perform /setup (or start setup automatically?)
+    update_daily_reminder(update)
 
     update.message.reply_text(
         locale_strings[user_dict[update.effective_user.id]["language"]]["greeting"],
@@ -72,9 +70,28 @@ def start(update: Update, _) -> None:
     )
 
 
-def set_daily_reminder(job_queue, chatid):
-    t = datetime.time(hour=21, minute=00, tzinfo=pytz.timezone("Europe/Berlin"))
-    job_queue.run_daily(start_report_auto, time=t, context=chatid)
+def update_daily_reminder(update):
+    if update.effective_user.id not in job_queue_user_list:
+        logger.info("Adding job to notify user.")
+        set_daily_reminder(job_queue, update.message.chat.id, update.effective_user.id)
+    else:
+        logger.info("Job already created for user. Skipping...")
+
+
+def set_daily_reminder(job_queue, chatid, userid):
+    polltime = user_dict[userid]["polltime"]
+    timezone = user_dict[userid]["timezone"]
+    if polltime != "undefined" and timezone != "undefined":
+        t = datetime.time(hour=int(polltime), minute=00, tzinfo=pytz.timezone(timezone))
+        job_queue.run_daily(start_report_auto, time=t, context=chatid)
+        job_queue_user_list.append(userid)
+        logger.info(
+            "Set reminder at hour " + str(polltime) + " in timezone " + str(timezone)
+        )
+    else:
+        logger.info(
+            "No polltime and or timezone set. Not setting up daily reminder job."
+        )
 
 
 def help_command(update: Update, _: CallbackContext) -> None:
@@ -319,11 +336,18 @@ def reminder(update: Update, _: CallbackContext) -> int:
 
         return TIMEZONE_CURRENTTIME
 
+    polltime = get_polltime_by_message_time(update.message.text)
+    mongodb_data_service.set_user_polltime(update.effective_user.id, polltime)
+    logger.info("Got polltime hour " + str(polltime))
+
     update.message.reply_text(
         text=locale_strings[user_dict[update.effective_user.id]["language"]][
             "reminder_reply"
         ]
     )
+
+    update_user_dict()
+    update_daily_reminder(update)
 
     return ConversationHandler.END
 
