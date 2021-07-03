@@ -1,0 +1,32 @@
+blis==0.7.4
+catalogue==2.0.4
+certifi==2021.5.30
+chardet==4.0.0
+click==7.1.2
+cymem==2.0.5
+de-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.0.0/de_core_news_sm-3.0.0-py3-none-any.whl
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0-py3-none-any.whl
+idna==2.10
+Jinja2==3.0.1
+joblib==1.0.1
+MarkupSafe==2.0.1
+murmurhash==1.0.5
+nltk==3.6.2
+numpy==1.21.0
+packaging==20.9
+pathy==0.6.0
+preshed==3.0.5
+pydantic==1.7.4
+pymongo==3.11.4
+pyparsing==2.4.7
+regex==2021.7.1
+requests==2.25.1
+smart-open==5.1.0
+spacy==3.0.6
+spacy-legacy==3.0.6
+srsly==2.4.1
+thinc==8.0.7
+tqdm==4.61.1
+typer==0.3.2
+urllib3==1.26.6
+wasabi==0.8.2
