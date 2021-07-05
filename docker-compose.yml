@@ -16,6 +16,13 @@ services:
       - defaultnet
     ports:
       - "3000:3000"
+  nlp:
+    build: nlp
+    restart: unless-stopped
+    depends_on:
+      - "mongodb"
+    networks:
+      - defaultnet
   mongodb:
     image: mongo:4.0.4
     restart: unless-stopped

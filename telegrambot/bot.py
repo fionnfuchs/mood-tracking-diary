@@ -384,7 +384,7 @@ def main() -> None:
 
     # on non command i.e message - echo the message on Telegram
     # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
-    conv_handler = ConversationHandler(
+    conv_handler_report = ConversationHandler(
         entry_points=[CommandHandler("hey", start_report)],
         states={
             DIARYENTRY: [MessageHandler(Filters.text & ~Filters.command, diary_entry)],
@@ -395,7 +395,7 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel", cancel)],
     )
 
-    conv_handler = ConversationHandler(
+    conv_handler_setup = ConversationHandler(
         entry_points=[CommandHandler("setup", start_setup)],
         states={
             LANGUAGE: [CallbackQueryHandler(language, pattern="^[1-2]$")],
@@ -407,7 +407,8 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel", cancel)],
     )
 
-    dispatcher.add_handler(conv_handler)
+    dispatcher.add_handler(conv_handler_report)
+    dispatcher.add_handler(conv_handler_setup)
 
     # Start the Bot
     updater.start_polling()
