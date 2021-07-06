@@ -19,18 +19,18 @@ class DataService:
         self.database = self.client["userdata"]
         logger.info("Database successfully connected!")
 
-    def get_mood_values(self, user):
+    def get_mood_values(self, userid):
         moodvalue_col = self.database["mood_value"]
-        query = {"userid": user}
+        query = {"userid": userid}
         result_docs = moodvalue_col.find(query)
         result = []
         for x in result_docs:
             result.append(x)
         return result
 
-    def get_diary_entries(self, user):
+    def get_diary_entries(self, userid):
         moodvalue_col = self.database["diary_entries"]
-        query = {"userid": user}
+        query = {"userid": userid}
         result_docs = moodvalue_col.find(query)
         result = []
         for x in result_docs:
@@ -44,3 +44,10 @@ class DataService:
         for user in result_docs:
             result.append(user)
         return result
+
+    def update_nlp_analysis(self, analysis, userid):
+        nlp_analysis_col = self.database["nlp_analysis"]
+        result = nlp_analysis_col.update(
+            {"userid": userid}, {"$set": analysis}, upsert=True
+        )
+        logger.info(result)
