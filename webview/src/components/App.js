@@ -7,13 +7,14 @@ import Diary from './Diary';
 import MockDataService from '../services/MockData';
 import cleanDateValues from '../services/DateService';
 import Card from './Card';
+import NLPView from './NLPView';
 
 class App extends React.Component {
 
   backendService = new BackendService();
   mockDataService = new MockDataService();
 
-  mock = false;
+  mock = true;
 
   constructor(props) {
     super(props);
@@ -71,6 +72,7 @@ class App extends React.Component {
         </Card>
         {notEnoughDataWarning}
         <MoodPlot data={this.state.data}></MoodPlot>
+        <NLPView data={this.state.data}></NLPView>
         <Diary data={this.state.data}></Diary>
       </div>;
 

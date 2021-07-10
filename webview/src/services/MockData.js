@@ -28,7 +28,17 @@ class MockDataService {
                     entry: "Lorem ipsum.",
                     timestamp: "2021-06-06T08:54:53.768Z"
                 },
-            ]
+            ],
+            nlpData: {
+                verbs: {
+                    "swim": [3, 4, 5, 4, 5, 4],
+                    "work": [3, 2, 4, 2, 2],
+                    "study": [2]
+                },
+                nouns: {
+                    "university": [2, 3],
+                }
+            }
         }
     }
 }

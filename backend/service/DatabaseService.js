@@ -12,8 +12,25 @@ class DatabaseService {
         if (await this.accessTokenValid(token, userid)) {
             const diaryEntries = await this.getDiaryEntries(userid);
             const moodValues = await this.getMoodValues(userid);
-            return { "diaryEntries": diaryEntries, "moodValues": moodValues };
+            const nlpValues = await this.getNlpValues(userid);
+            console.log({ "diaryEntries": diaryEntries, "moodValues": moodValues, "nlpData": nlpValues[0] });
+            return { "diaryEntries": diaryEntries, "moodValues": moodValues, "nlpData": nlpValues[0] };
         }
+
+    }
+
+    async getNlpValues(userid) {
+        const nlpCollection = this.userDatabase.collection("nlp_analysis");
+        const cursor = nlpCollection.find({ userid: parseInt(userid) });
+
+        if ((await cursor.count()) === 0) {
+            console.log("No NLP Analysis found!");
+        }
+
+        var entries = [];
+
+        entries = await cursor.toArray();
+        return entries;
     }
 
     async accessTokenValid(token, userid) {

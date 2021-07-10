@@ -88,7 +88,7 @@ def analyze_data_by_date(data_by_date, language):
                     analysis["verbs"][verb].append(value)
         for noun in nlp_dict["relevant_nouns"]:
             for value in data_by_date[date]["values"]:
-                if verb not in analysis["nouns"].keys():
+                if noun not in analysis["nouns"].keys():
                     analysis["nouns"][noun] = [value]
                 else:
                     analysis["nouns"][noun].append(value)
