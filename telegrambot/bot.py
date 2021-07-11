@@ -89,12 +89,10 @@ def set_daily_reminder(job_queue, chatid, userid):
     polltime = user_dict[userid]["polltime"]
     timezone = user_dict[userid]["timezone"]
     if polltime != "undefined" and timezone != "undefined":
-        t = datetime.time(hour=int(polltime), minute=00, tzinfo=pytz.timezone(timezone))
+        t = datetime.time(hour=int(polltime), minute=0, tzinfo=pytz.timezone(timezone))
         job_queue.run_daily(start_report_auto, time=t, context=chatid)
         job_queue_user_list.append(userid)
-        logger.info(
-            "Set reminder at hour " + str(polltime) + " in timezone " + str(timezone)
-        )
+        logger.info("Set reminder at time " + str(t) + " in timezone " + str(timezone))
     else:
         logger.info(
             "No polltime and or timezone set. Not setting up daily reminder job."
@@ -155,12 +153,15 @@ def start_report(update: Update, _: CallbackContext) -> int:
 
 
 def start_report_auto(context: CallbackContext) -> int:
-    context.bot.send_message(
-        chat_id=context.job.context,
-        text=locale_strings[user_dict[update.effective_user.id]["language"]][
-            "start_report_auto"
-        ],
-    )
+    user = None
+    for u in user_dict.keys():
+        if user_dict[u]["chatid"] == context.job.context:
+            user = user_dict[u]["userid"]
+    if user != None:
+        context.bot.send_message(
+            chat_id=context.job.context,
+            text=locale_strings[user_dict[user]["language"]]["start_report_auto"],
+        )
 
 
 def already_exists(update: Update, _: CallbackContext) -> int:

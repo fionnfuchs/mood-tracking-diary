@@ -1,6 +1,6 @@
 locale_strings = {
     "en": {
-        "greeting": "Hi! My name is Modia. I am a bot. I can track your mood and write a diary with you if you like! Just say /hey or tap it and we can begin!",
+        "greeting": "Hi! My name is Modia. I am a bot. I can track your mood and write a diary with you if you like! Please start by typing (or clicking) /setup !",
         "help": "Don't know how to continue? Here is a list of commands you can use:\n (To be implemented)",
         "start_report_auto": "Hey :) Want to tell me about yesterday? Just answer with (or click) /hey to start.",
         "start_report": "Hey :) Glad to hear from you! Tell me a bit about yesterday!",
@@ -21,7 +21,7 @@ locale_strings = {
         "reminder_reply": "",
     },
     "de": {
-        "greeting": "Hi! Mein Name ist Modia. Ich bin ein Bot. Zusammen können wir deine Stimmung tracken und ein Tagebuch schreiben! Sag einfach /hey oder drück darauf!",
+        "greeting": "Hi! Mein Name ist Modia. Ich bin ein Bot. Zusammen können wir deine Stimmung tracken und ein Tagebuch schreiben! Bitte schreib einfach /setup oder drück darauf, damit wir ein paar Dinge einstelln können!",
         "help": "Du weißt nicht weiter? Hier ist eine Liste an Befehlen die du geben kannst:\n (To be implemented)",
         "start_report_auto": "Hey :) Willst du mir nicht von gestern erzählen? Schreib einfach /hey (oder drück drauf) um zu starten.",
         "start_report": "Hey :) Schön von dir zu hören! Erzähl mir ein bisschen über deinen Tag gestern!",
@@ -36,9 +36,9 @@ locale_strings = {
         "stats_nolink": "Okay, du kannst dir jederzeit einen Link holen indem du /stats schreibst.",
         "cancel": "Okay, wir hören hier auf :) Du kannst jederzeit erneut starten mit /hey!",
         "start_setup": "Wir werden jetzt einige Dinge zusammen durchgehen. Zuerst wähle bitte die gewünschte Sprache für Modia aus.",
-        "language_reply": "Notiert! Ich werde ab jetzt in dieser Sprache mit dir reden. Jetzt sag mir doch bitte wie spät es gerade bei dir ist (bspw. 09:00 U1hr). Diese Information brauche ich um die Zeitzone für dich richtig einzustellen.",
+        "language_reply": "Notiert! Ich werde ab jetzt in dieser Sprache mit dir reden. Jetzt sag mir doch bitte wie spät es gerade bei dir ist (bspw. 09:00 Uhr). Diese Information brauche ich um die Zeitzone für dich richtig einzustellen.",
         "timezone_reply": "Perfekt. Als letztes sag mir doch bitte um wie viel Uhr ich dich an deinen täglichen Tagebucheintrag erinnern soll (bswp. 21:00 Uhr). Wenn du nicht erinnert werden möchtest antworte bitte mit nein.",
         "timezone_invalid_reply": "Ich konnte die Uhrzeit leider nicht verstehen. Bitte gib sie im folgenden Format an: '09:00 Uhr' oder einfach '09:00'.",
-        "reminder_reply": "Notiert! Das wars auch schon. Vielen Dank, dass du dir die Zeit genommen hast.",
+        "reminder_reply": "Notiert! Das wars auch schon. Vielen Dank, dass du dir die Zeit genommen hast. Wenn du ohne dass du von mir angesprochen wirst einen Eintrag machen möchtest schreib einfach /hey .",
     },
 }
