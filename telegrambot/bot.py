@@ -33,9 +33,16 @@ from config import BOT_TOKEN
 
 from data_service import DataService
 
-DIARYENTRY, MOOD, MOODVALUE, SEESTATS, LANGUAGE, TIMEZONE_CURRENTTIME, REMINDER = range(
-    7
-)
+(
+    ALREADYEXISTS,
+    DIARYENTRY,
+    MOOD,
+    MOODVALUE,
+    SEESTATS,
+    LANGUAGE,
+    TIMEZONE_CURRENTTIME,
+    REMINDER,
+) = range(8)
 
 # Enable logging
 logging.basicConfig(
@@ -113,6 +120,31 @@ def reset(update: Update, _: CallbackContext) -> None:
 
 
 def start_report(update: Update, _: CallbackContext) -> int:
+
+    _timezone = user_dict[update.effective_user.id]["timezone"]
+    if _timezone == "undefined" or _timezone == None:
+        _timezone = "UTC"
+
+    if mongodb_data_service.diary_entry_exists_for_today(
+        update.effective_user.id, _timezone=_timezone
+    ):
+        keyboard = [
+            [
+                InlineKeyboardButton("Yes", callback_data="1"),
+                InlineKeyboardButton("No", callback_data="2"),
+            ]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        update.message.reply_text(
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "already_exists"
+            ],
+            reply_markup=reply_markup,
+        )
+
+        return ALREADYEXISTS
+
     update.message.reply_text(
         text=locale_strings[user_dict[update.effective_user.id]["language"]][
             "start_report"
@@ -129,6 +161,26 @@ def start_report_auto(context: CallbackContext) -> int:
             "start_report_auto"
         ],
     )
+
+
+def already_exists(update: Update, _: CallbackContext) -> int:
+    query = update.callback_query
+    query.answer()
+
+    if query.data == "1":
+        query.edit_message_text(
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "already_exists_yes"
+            ]
+        )
+        return DIARYENTRY
+    if query.data == "2":
+        query.edit_message_text(
+            text=locale_strings[user_dict[update.effective_user.id]["language"]][
+                "already_exists_no"
+            ]
+        )
+        return ConversationHandler.END
 
 
 def diary_entry(update: Update, _: CallbackContext) -> int:
@@ -387,6 +439,7 @@ def main() -> None:
     conv_handler_report = ConversationHandler(
         entry_points=[CommandHandler("hey", start_report)],
         states={
+            ALREADYEXISTS: [CallbackQueryHandler(already_exists, pattern="^[1-2]$")],
             DIARYENTRY: [MessageHandler(Filters.text & ~Filters.command, diary_entry)],
             MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
             MOODVALUE: [CallbackQueryHandler(mood_value, pattern="^[1-5]$")],

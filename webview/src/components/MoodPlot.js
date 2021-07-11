@@ -64,7 +64,7 @@ class MoodPlot extends React.Component {
                         }}
                         layout={{
                             autosize: false,
-                            width: Math.min(760, this.state.windowWidth * 0.9),
+                            width: Math.min(760, this.state.windowWidth * 0.8),
                             height: Math.min(Math.max(300, this.state.windowWidth * 0.6), 500),
                             plot_bgcolor: "rgba(0,0,0,0)",
                             paper_bgcolor: 'rgba(0,0,0,0)',

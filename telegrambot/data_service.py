@@ -1,5 +1,8 @@
 import pymongo
+import pytz
 from tokens import create_secret_token
+from datetime import datetime
+from pytz import timezone
 
 
 class DataService:
@@ -103,3 +106,25 @@ class DataService:
         result = token_col.insert(new_access_token_entry)
         self.logger.info(result)
         return token
+
+    def diary_entry_exists_for_today(self, user, _timezone="Europe/Berlin"):
+        # TODO do this check in users timezone
+
+        diary_col = self.database["diary_entries"]
+        current_time = datetime.now(pytz.utc)
+        time_border = current_time.astimezone(timezone(_timezone))
+        time_border = time_border.replace(minute=0, hour=0)
+        time_border = time_border.astimezone(timezone("UTC"))
+
+        query = {"userid": user, "timestamp": {"$gte": time_border}}
+        result_docs = diary_col.find(query)
+        result = []
+        for x in result_docs:
+            result.append(x)
+        self.logger.info(
+            "Diary entries already existing for today: " + str(len(result))
+        )
+        if len(result) > 0:
+            return True
+        else:
+            return False

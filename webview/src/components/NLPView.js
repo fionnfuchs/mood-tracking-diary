@@ -48,8 +48,9 @@ class NLPView extends React.Component {
 
         return (
             <Card>
-                <h2 className="text-gray-800 text-2xl font-semibold">Verbs</h2>
-                <div class="container p-4">
+                <h2 className="text-gray-800 text-2xl font-semibold">NLP Data</h2>
+                <h2 className="text-gray-800 text-xl font-semibold">Verbs</h2>
+                <div className="container p-4">
                     <table className="w-full bg-white">
                         <thead className="bg-gray-200">
                             <tr>
@@ -61,7 +62,9 @@ class NLPView extends React.Component {
                             {verbTRs}
                         </tbody>
                     </table>
-                    <h2 className="text-gray-800 text-2xl font-semibold">Nouns</h2>
+                </div>
+                <h2 className="text-gray-800 text-xl font-semibold">Nouns</h2>
+                <div class="container p-4">
                     <table class="w-full bg-white">
                         <thead className="bg-gray-200">
                             <tr>

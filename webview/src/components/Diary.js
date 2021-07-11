@@ -36,28 +36,38 @@ class Diary extends React.Component {
         if (this.state && this.state.entries) {
             var entryObjects = [];
 
+            let entryDict = {};
+            console.log(entryDict);
             for (let i = 0; i < this.state.entries.length; i++) {
+                let date = this.state.dates[i];
+                if (entryDict[date] == undefined) {
+                    entryDict[date] = [this.state.entries[i]];
+                }
+                else {
+                    entryDict[date].push(this.state.entries[i]);
+                }
+
+            }
+
+            for (var date of Object.keys(entryDict)) {
                 entryObjects.push(
-                    <h2 className="text-gray-800 text-xl font-semibold">{
-                        this
-                            .state
-                            .dates[i]
-                    }</h2>
+                    <h2 className="text-gray-800 text-xl font-semibold">{"\u{1F4D6} "}{date}</h2>
                 );
-                entryObjects.push(<p className="mt-2 text-gray-600">{
-                    this
-                        .state
-                        .entries[i]
-                }</p>);
+                for (var entry of entryDict[date]) {
+                    entryObjects.push(<p className="mt-2 text-gray-600">{
+                        entry
+                    }</p>);
+                }
                 entryObjects.push(<p className="mt-2 text-gray-600"></p>);
             }
         }
+
 
         return (
             <Card>
                 <h2 className="text-gray-800 text-2xl font-semibold my-2">Your Diary Entries</h2>
                 {entryObjects}
-            </Card>
+            </Card >
         );
     }
 
