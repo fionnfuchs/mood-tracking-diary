@@ -28,7 +28,7 @@ Then perform the following steps:
     docker-compose up
     ```
 
-## Run Webview React app
+## Run webview react app only with mock data
 1. Set `mock=true` in app.js to enable the use of mock data without backend
 2. Start development server
     ```
