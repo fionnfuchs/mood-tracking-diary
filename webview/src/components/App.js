@@ -14,7 +14,7 @@ class App extends React.Component {
   backendService = new BackendService();
   mockDataService = new MockDataService();
 
-  mock = false;
+  mock = true;
 
   constructor(props) {
     super(props);

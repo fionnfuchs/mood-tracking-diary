@@ -189,16 +189,29 @@ def diary_entry(update: Update, _: CallbackContext) -> int:
         update.message.text,
         datetime.datetime.now(datetime.timezone.utc),
     )
+
+    keyboard = [
+        [
+            InlineKeyboardButton("1", callback_data="1"),
+            InlineKeyboardButton("2", callback_data="2"),
+            InlineKeyboardButton("3", callback_data="3"),
+            InlineKeyboardButton("4", callback_data="4"),
+            InlineKeyboardButton("5", callback_data="5"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
     update.message.reply_text(
         text=locale_strings[user_dict[update.effective_user.id]["language"]][
-            "diary_entry_reply"
-        ]
+            "mood_reply"
+        ],
+        reply_markup=reply_markup,
     )
 
-    return MOOD
+    return MOODVALUE
 
 
-def mood(update: Update, _: CallbackContext) -> int:
+"""def mood(update: Update, _: CallbackContext) -> int:
     mongodb_data_service.insert_mood_description(
         update.effective_user.id,
         update.message.text,
@@ -222,7 +235,7 @@ def mood(update: Update, _: CallbackContext) -> int:
         reply_markup=reply_markup,
     )
 
-    return MOODVALUE
+    return MOODVALUE"""
 
 
 def mood_value(update: Update, _: CallbackContext) -> int:
@@ -269,7 +282,12 @@ def see_stats(update: Update, _: CallbackContext) -> int:
         access_token = mongodb_data_service.insert_new_access_token(
             update.effective_user.id
         )
-        link = "https://notimplemented.com/stats?token=" + access_token
+        link = (
+            "https://modia.fionnfuchs.com/?user="
+            + str(update.effective_user.id)
+            + "&token="
+            + access_token
+        )
         query.edit_message_text(
             text=locale_strings[user_dict[update.effective_user.id]["language"]][
                 "stats_link"
