@@ -459,7 +459,7 @@ def main() -> None:
         states={
             ALREADYEXISTS: [CallbackQueryHandler(already_exists, pattern="^[1-2]$")],
             DIARYENTRY: [MessageHandler(Filters.text & ~Filters.command, diary_entry)],
-            MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
+            # MOOD: [MessageHandler(Filters.text & ~Filters.command, mood)],
             MOODVALUE: [CallbackQueryHandler(mood_value, pattern="^[1-5]$")],
             SEESTATS: [CallbackQueryHandler(see_stats, pattern="^[1-2]$")],
         },
