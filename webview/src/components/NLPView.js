@@ -16,9 +16,9 @@ class NLPView extends React.Component {
         for (var verb of Object.keys(this.props.data.nlpData.verbs)) {
             let avg = this.average(this.props.data.nlpData.verbs[verb]);
             verbTRs.push(
-                <tr className={classChange}>
+                <tr className={classChange + " group select-none"}>
                     <td>{verb}</td>
-                    <td>{mood_emojis[Math.round(avg) - 1]}({avg})</td>
+                    <td>{mood_emojis[Math.round(avg) - 1]} <span className="opacity-20 group-hover:opacity-80">(avg: {avg}, nr: {this.props.data.nlpData.verbs[verb].length}x)</span></td>
                 </tr>
             );
             if (classChange == "") {
@@ -33,9 +33,9 @@ class NLPView extends React.Component {
         for (var noun of Object.keys(this.props.data.nlpData.nouns)) {
             let avg = this.average(this.props.data.nlpData.nouns[noun]);
             nounTRs.push(
-                <tr className={classChange}>
+                <tr className={classChange + " group select-none"}>
                     <td>{noun}</td>
-                    <td>{mood_emojis[Math.round(avg) - 1]}({avg})</td>
+                    <td className="group">{mood_emojis[Math.round(avg) - 1]} <span className="opacity-20 group-hover:opacity-80">(avg: {avg}, nr: {this.props.data.nlpData.nouns[noun].length}x)</span></td>
                 </tr>
             );
             if (classChange == "") {

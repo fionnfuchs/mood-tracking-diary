@@ -22,16 +22,27 @@ class Diary extends React.Component {
     dataUpdate() {
         var entries = [];
         var dates = [];
+        var values = {};
         for (var value of this.props.data.diaryEntries) {
             entries.push(value.entry);
             dates.push(value.timestamp);
+
+        }
+        for (var value of this.props.data.moodValues) {
+            if (!values[value.timestamp]) {
+                values[value.timestamp] = [value];
+            } else {
+                values[value.timestamp].push(value);
+            }
         }
 
-        this.setState({ entries: entries, dates: dates });
+        this.setState({ entries: entries, dates: dates, values: values });
         console.log(this.state);
     }
 
     render() {
+
+        let mood_emojis = ["\u{1F62B}", "\u{1F641}", "\u{1F642}", "\u{1F601}", "\u{1F929}"]
 
         if (this.state && this.state.entries) {
             var entryObjects = [];
@@ -50,14 +61,24 @@ class Diary extends React.Component {
             }
 
             for (var date of Object.keys(entryDict)) {
+
+                let moodEmojiTags = [];
+                if (this.state.values[date]) {
+                    for (var value of this.state.values[date]) {
+                        moodEmojiTags.push(<span>{mood_emojis[value.value - 1]}</span>);
+                    }
+                }
                 entryObjects.push(
-                    <h2 className="text-gray-800 text-xl font-semibold">{"\u{1F4D6} "}{date}</h2>
+                    <h2 className="text-gray-800 text-xl font-semibold">{"\u{1F4D6} "}{date}   {moodEmojiTags}</h2>
                 );
+                let entryContent = [];
                 for (var entry of entryDict[date]) {
-                    entryObjects.push(<p className="mt-2 text-gray-600">{
+                    entryContent.push(<p className="mt-2 text-gray-600">{
                         entry
                     }</p>);
                 }
+
+                entryObjects.push(<div className="p-2">{entryContent}</div>);
                 entryObjects.push(<p className="mt-2 text-gray-600"></p>);
             }
         }
