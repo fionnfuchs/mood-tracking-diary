@@ -55,7 +55,7 @@ class MoodPlot extends React.Component {
                             type: 'scatter',
                             mode: 'lines+markers',
                             marker: {
-                                color: 'purple'
+                                color: '#6F9CEB'
                             }
                         }
                         ]}

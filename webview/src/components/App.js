@@ -50,7 +50,7 @@ class App extends React.Component {
 
     if (this.state.data && ((this.state.data.diaryEntries && this.state.data.diaryEntries.length < 3) || (this.state.data.moodValues && this.state.data.moodValues.length < 3))) {
       notEnoughDataWarning = <Card>
-        <h1 className="text-yellow-600 text-xl font-semibold">Info: Not many datapoints available.</h1>
+        <h1 className="text-yellow-600 text-xl font-semibold">Warning: Not enough datapoints available to provide useful information.</h1>
         <p>You should use the bot for a couple of days for it to work properly!</p>
       </Card>
     }
