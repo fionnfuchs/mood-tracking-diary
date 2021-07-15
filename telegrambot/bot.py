@@ -270,7 +270,11 @@ def mood_value(update: Update, _: CallbackContext) -> int:
             reply_markup=reply_markup,
         )
     else:
-        query.edit_message_text("Great!")
+        query.edit_message_text(
+            locale_strings[user_dict[update.effective_user.id]["language"]][
+                "mood_value_reply_nostats"
+            ]
+        )
         return ConversationHandler.END
     return SEESTATS
 
@@ -308,7 +312,20 @@ def see_stats(update: Update, _: CallbackContext) -> int:
 
 def stats(update: Update, _: CallbackContext) -> None:
     mongodb_data_service.get_mood_values(update.effective_user.id)
-    update.message.reply_text("We are currently implementing stats...")
+    access_token = mongodb_data_service.insert_new_access_token(
+        update.effective_user.id
+    )
+    link = (
+        "https://modia.fionnfuchs.com/?user="
+        + str(update.effective_user.id)
+        + "&token="
+        + access_token
+    )
+    update.message.reply_text(
+        text=locale_strings[user_dict[update.effective_user.id]["language"]][
+            "stats_linkonly"
+        ].replace("<link>", link)
+    )
 
 
 def cancel(update: Update, _: CallbackContext) -> int:
