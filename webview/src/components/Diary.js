@@ -69,7 +69,7 @@ class Diary extends React.Component {
                     }
                 }
                 entryObjects.push(
-                    <h2 className="text-gray-800 text-xl font-semibold">{"\u{1F4D6} "}{date}   {moodEmojiTags}</h2>
+                    <h2 className="text-gray-800 text-xl font-semibold">{"\u{1F4D6} "}{date} {moodEmojiTags}</h2>
                 );
                 let entryContent = [];
                 for (var entry of entryDict[date]) {

@@ -439,6 +439,10 @@ def main() -> None:
     # Create database connection
     mongodb_data_service.connect()
     update_user_dict()
+    for user in user_dict.keys():
+        set_daily_reminder(
+            job_queue, user_dict[user]["chatid"], user_dict[user]["userid"]
+        )
 
     # Create the Updater and pass it your bot's token.
     updater = Updater(BOT_TOKEN)
